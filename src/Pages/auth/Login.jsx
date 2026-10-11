@@ -170,7 +170,7 @@ const Login = () => {
     } catch (error) {
       console.error("Login Error:", error);
 
-      let errorMsg = "Network Error! Please check your connection.";
+      let errorMsg = "Invalid credentials!";
 
       if (error.response) {
         errorMsg = " Invalid credentials!";

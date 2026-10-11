@@ -220,7 +220,7 @@ const Signup = () => {
         referrer: "",
         introRegNo: ""
       }));
-      setSponsorNameDisplay("Network Error");
+      setSponsorNameDisplay("Invalid Sponsor");
     }
   };
 
@@ -361,7 +361,7 @@ const Signup = () => {
     } catch (error) {
       console.error("Signup Error:", error);
 
-      let errorMsg = "Network Error! Please check your connection.";
+      let errorMsg = "Please check your connection.";
 
       if (error.response) {
         errorMsg = error.response.data?.message || error.response.statusText || "Server Error";
@@ -449,7 +449,7 @@ const Signup = () => {
                             style={{
                               color:
                                 sponsorNameDisplay === "Invalid Sponsor" ||
-                                sponsorNameDisplay === "Network Error"
+                                sponsorNameDisplay === "Invalid Sponsor"
                                   ? "#ff0000"
                                   : "#008202",
                               fontWeight: "600",

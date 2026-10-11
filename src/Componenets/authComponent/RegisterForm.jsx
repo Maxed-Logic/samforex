@@ -432,7 +432,7 @@ export default function RegisterForm({
       } else if (error.code === 'ECONNABORTED') {
         showError('Request timed out.');
       } else if (!error.response) {
-        showError('Network error. Check your connection.');
+        showError('Check your connection.');
       }
     } finally {
       setLoading(false);
@@ -493,7 +493,7 @@ export default function RegisterForm({
   }
 
   const sponsorColor =
-    formData.sponsorName === "Invalid Sponsor" || formData.sponsorName === "Network Error"
+    formData.sponsorName === "Invalid Sponsor"
       ? 'text-red-400'
       : formData.sponsorName
       ? 'text-emerald-400'
