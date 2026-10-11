@@ -3,7 +3,7 @@ import { FaArrowDown, FaRobot, FaShareNodes } from "react-icons/fa6";
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import QRModal from '../../Pages/dashboard/QRModal';
-import smalldashboardlogo from '../../assets/images/logo/favicon-01.png'
+import { FaHome } from 'react-icons/fa';
 
 const userProfileImage = "https://bootstrapdemos.adminmart.com/modernize/dist/assets/images/profile/user-1.jpg";
 
@@ -64,8 +64,9 @@ const Header = ({ toggleSidebar }) => {
                   className="nav-link sidebartoggler"
                   style={{ background: 'none', border: 'none', cursor: 'pointer' }}
                 >
-                  <img src={smalldashboardlogo} />
+                  <FaHome style={{fontSize: "19px"}}/>
                 </button>
+
               </Link>
             </li>
           </ul>
@@ -94,31 +95,6 @@ const Header = ({ toggleSidebar }) => {
 
 
             <ul className="navbar-nav flex-row align-items-center" style={{ flexDirection: 'row', display: 'flex' }}>
-
-
-              <a href="/ApexmindAI.apk" download>
-                <li className="nav-item ">
-                  <div
-                    className="btn01"
-                    style={{
-                      width: "45px",
-                      height: "45px",
-                      borderRadius: "50%",
-                      border: "none",
-                      background: 'var(--bs-primary-bg-subtle)',
-                      color: "#3e51a5",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: "20px",
-                      cursor: "pointer",
-                    }}
-                  >
-                    <FaArrowDown />
-                  </div>
-                </li>
-              </a>
-
 
 
 
@@ -288,7 +264,7 @@ const Header = ({ toggleSidebar }) => {
                           <div className="upgrade-plan bg-primary-subtle position-relative overflow-hidden rounded-4 p-4 mb-9">
                             <div className="row">
                               <div className="col-6">
-                                <h5 className=" mb-3 fw-semibold">Max Invest $5000</h5>
+                                <h5 className=" mb-3 fw-semibold">Min Invest $50</h5>
                                 <Link to="/dashboard/InvestFund"><button className="btn-primary">Invest</button></Link>
                               </div>
                               <div className="col-6">

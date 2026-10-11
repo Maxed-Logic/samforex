@@ -476,7 +476,8 @@ const Fundtransfer = () => {
                                                     placeholder="Enter OTP"
                                                     value={otp1}
                                                     onChange={(e) => setOtp1(e.target.value)}
-                                                    disabled={!otpSent1}
+                                                    disabled={!otpSent1} 
+                                                    style={{ border: "1px solid #d5d4d4" }}
                                                 />
                                             </div>
                                             {!otpSent1 ? (

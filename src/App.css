@@ -417,7 +417,6 @@ color: green;
 .amount-input-wrapper {
     display: flex;
     align-items: center;
-    border: 2px solid #e2e8f0;
     border-radius: 12px;
     background: white;
     transition: 0.2s;
@@ -640,7 +639,7 @@ background: #a2b3dc6b !important;
     border-radius: 5px;
 }
 .income-text{
-    font-weight: 800;
+    font-weight: 600;
 }
 .income-balance{
     color: green !important;

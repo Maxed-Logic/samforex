@@ -24,19 +24,8 @@ const Signup = () => {
   // ==================== PASSWORD STATE ====================
   const [showPassword, setShowPassword] = useState(false);
 
-  // ==================== OTP STATES ====================
-  const [otpSent, setOtpSent] = useState(false);
-  const [otpVerified, setOtpVerified] = useState(false);
-  const [otpValue, setOtpValue] = useState("");
-  const [otpLoading, setOtpLoading] = useState(false);
-  const [storedOtp, setStoredOtp] = useState("");
-  const [isOtpMode, setIsOtpMode] = useState(false);
-  const [otpStatus, setOtpStatus] = useState(null);
-  const [resendTimer, setResendTimer] = useState(0);
+  // ==================== SPONSOR STATE ====================
   const [sponsorNameDisplay, setSponsorNameDisplay] = useState("");
-  const emailInputRef = useRef(null);
-  const otpCheckTimeout = useRef(null);
-  const timerInterval = useRef(null);
 
   const [formData, setFormData] = useState({
     introRegNo: "",
@@ -88,78 +77,6 @@ const Signup = () => {
         textAlign: 'center',
       },
     });
-  };
-
-  // ==================== TIMER FOR RESEND ====================
-  useEffect(() => {
-    if (resendTimer > 0) {
-      timerInterval.current = setInterval(() => {
-        setResendTimer((prev) => prev - 1);
-      }, 1000);
-    } else {
-      if (timerInterval.current) {
-        clearInterval(timerInterval.current);
-        timerInterval.current = null;
-      }
-    }
-
-    return () => {
-      if (timerInterval.current) {
-        clearInterval(timerInterval.current);
-        timerInterval.current = null;
-      }
-    };
-  }, [resendTimer]);
-
-  // ==================== AUTO VERIFY OTP ====================
-  useEffect(() => {
-    if (isOtpMode && otpValue.length === 6 && !otpVerified && !otpLoading) {
-      if (otpCheckTimeout.current) {
-        clearTimeout(otpCheckTimeout.current);
-      }
-      otpCheckTimeout.current = setTimeout(() => {
-        autoVerifyOTP();
-      }, 300);
-    }
-
-    return () => {
-      if (otpCheckTimeout.current) {
-        clearTimeout(otpCheckTimeout.current);
-      }
-    };
-  }, [otpValue, isOtpMode]);
-
-  const autoVerifyOTP = () => {
-    if (!otpValue || otpValue.length !== 6) return;
-
-    setOtpLoading(true);
-    try {
-      if (otpValue === storedOtp) {
-        setOtpStatus('success');
-        setOtpVerified(true);
-        showSuccessToast("OTP Verified Successfully!");
-        setTimeout(() => {
-          setOtpLoading(false);
-        }, 500);
-      } else {
-        setOtpStatus('error');
-        showErrorToast(" Invalid OTP! Try again.");
-        setTimeout(() => {
-          setOtpValue("");
-          setOtpStatus(null);
-          setOtpLoading(false);
-          emailInputRef.current?.focus();
-        }, 1000);
-      }
-    } catch (error) {
-      showErrorToast("Verification failed");
-      setOtpStatus('error');
-      setTimeout(() => {
-        setOtpValue("");
-        setOtpStatus(null);
-        setOtpLoading(false);
-      }, 1000);
-    }
   };
 
   // ==================== FETCH COUNTRIES ====================
@@ -264,102 +181,48 @@ const Signup = () => {
     document.body.removeChild(textArea);
   };
 
-  // ==================== FORMAT TIME ====================
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-  };
-
-  // ==================== SEND OTP ====================
-  const handleSendOTP = async () => {
-    if (!formData.email || !formData.email.includes('@')) {
-      showErrorToast(" Please enter a valid email address!");
-      return;
-    }
-
-    setOtpLoading(true);
-    try {
-      const response = await apiClient.post(`/Auth/send-otp-to-gmail?eamil=${encodeURIComponent(formData.email)}`);
-      if (response.data?.data?.result === "true") {
-        const receivedOtp = response.data.otp || response.data.data?.otp;
-        if (receivedOtp) {
-          setStoredOtp(receivedOtp);
-        }
-
-        setOtpSent(true);
-        setIsOtpMode(true);
-        setOtpValue("");
-        setOtpStatus(null);
-        setOtpVerified(false);
-        setResendTimer(300);
-        showSuccessToast(`OTP sent to ${formData.email}`);
-        setTimeout(() => emailInputRef.current?.focus(), 300);
-      } else {
-        showErrorToast(response.data?.data?.message || "Failed to send OTP");
-      }
-    } catch (error) {
-      console.error("OTP Error:", error);
-      showErrorToast("Failed to send OTP");
-    } finally {
-      setOtpLoading(false);
-    }
-  };
-
-  // ==================== RESEND OTP ====================
-  const handleResendOTP = () => {
-    if (resendTimer > 0) {
-      showErrorToast(`⏳ Wait ${formatTime(resendTimer)} before resending`);
-      return;
-    }
-    handleSendOTP();
-  };
-
   // ==================== FETCH SPONSOR ====================
-const fetchSponsorDetails = async (sponsorId) => {
-  if (!sponsorId || !sponsorId.trim()) {
-    setSponsorNameDisplay("");
-    return;
-  }
+  const fetchSponsorDetails = async (sponsorId) => {
+    if (!sponsorId || !sponsorId.trim()) {
+      setSponsorNameDisplay("");
+      return;
+    }
 
-  try {
-    const response = await apiClient.get(`/Auth/UserDetailsById?loingId=${sponsorId}`);
-    if (response.data?.result === "true" && response.data.user) {
-      const sponsorName = response.data.user.fName || response.data.user.LoginID;
+    try {
+      const response = await apiClient.get(`/Auth/UserDetailsById?loingId=${sponsorId}`);
+      if (response.data?.result === "true" && response.data.user) {
+        const sponsorName = response.data.user.fName || response.data.user.LoginID;
 
-      // ✅ Actual name → formData (API me jayega)
-      setFormData(prev => ({
-        ...prev,
-        sponsorName: sponsorName,       // asli naam
-        referrer: sponsorName,
-        introRegNo: response.data.user.regNo,
-      }));
+        setFormData(prev => ({
+          ...prev,
+          sponsorName: sponsorName,
+          referrer: sponsorName,
+          introRegNo: response.data.user.regNo,
+        }));
 
-      // ✅ Display name → sirf UI ke liye
-      setSponsorNameDisplay(`✓ Verified `);
-
-      showSuccessToast(`Sponsor: ✓ Verified `);
-    } else {
+        setSponsorNameDisplay(`✓ Verified`);
+        showSuccessToast(`Sponsor: ✓ Verified`);
+      } else {
+        setFormData(prev => ({
+          ...prev,
+          sponsorName: "Invalid Sponsor",
+          referrer: "",
+          introRegNo: ""
+        }));
+        setSponsorNameDisplay("Invalid Sponsor");
+        showErrorToast(" Invalid Sponsor ID!");
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
       setFormData(prev => ({
         ...prev,
         sponsorName: "Invalid Sponsor",
         referrer: "",
         introRegNo: ""
       }));
-      setSponsorNameDisplay("Invalid Sponsor");
-      showErrorToast(" Invalid Sponsor ID!");
+      setSponsorNameDisplay("Network Error");
     }
-  } catch (err) {
-    console.error("Fetch error:", err);
-    setFormData(prev => ({
-      ...prev,
-      sponsorName: "Invalid Sponsor",
-      referrer: "",
-      introRegNo: ""
-    }));
-    setSponsorNameDisplay("Network Error");
-  }
-};
+  };
 
   // ==================== URL REF CODE ====================
   useEffect(() => {
@@ -382,44 +245,8 @@ const fetchSponsorDetails = async (sponsorId) => {
     if (name === "introRegNo") {
       setFormData((prev) => ({ ...prev, referrer_Id: value }));
       fetchSponsorDetails(value);
-    } else if (name === "email") {
-      if (isOtpMode) {
-        const numValue = value.replace(/\D/g, '');
-        if (numValue.length <= 6) {
-          setOtpValue(numValue);
-          if (otpStatus !== null) {
-            setOtpStatus(null);
-          }
-          if (otpVerified) {
-            setOtpVerified(false);
-          }
-        }
-      } else {
-        setFormData((prev) => ({ ...prev, email: value }));
-        if (otpSent || otpVerified) {
-          setOtpSent(false);
-          setOtpVerified(false);
-          setIsOtpMode(false);
-          setOtpValue("");
-          setStoredOtp("");
-          setOtpStatus(null);
-          setResendTimer(0);
-          if (timerInterval.current) {
-            clearInterval(timerInterval.current);
-            timerInterval.current = null;
-          }
-        }
-      }
     } else {
       setFormData((prev) => ({ ...prev, [name]: value }));
-    }
-  };
-
-  // ==================== KEY PRESS ====================
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && isOtpMode && otpValue.length === 6 && !otpLoading && !otpVerified) {
-      e.preventDefault();
-      autoVerifyOTP();
     }
   };
 
@@ -435,11 +262,6 @@ const fetchSponsorDetails = async (sponsorId) => {
   // ==================== SIGNUP ====================
   const handleSignup = async (e) => {
     e.preventDefault();
-
-    if (!otpVerified) {
-      showErrorToast(" Please verify OTP first!");
-      return;
-    }
 
     if (!formData.sponsorName || formData.sponsorName === "Invalid Sponsor") {
       showErrorToast(" Please enter a valid Sponsor ID!");
@@ -601,6 +423,7 @@ const fetchSponsorDetails = async (sponsorId) => {
                   <form onSubmit={handleSignup}>
                     <div className="row">
 
+                      {/* Sponsor ID */}
                       <div className="col-lg-12">
                         <div className="form-box">
                           <input
@@ -614,27 +437,29 @@ const fetchSponsorDetails = async (sponsorId) => {
                         </div>
                       </div>
 
-             <div className="col-lg-12">
-  <div className="form-box">
-    <input
-      type="text"
-      value={sponsorNameDisplay}
-      readOnly
-      placeholder="Sponsor Name"
-      className="readonly-input"
-      style={{
-        color:
-          sponsorNameDisplay === "Invalid Sponsor" ||
-          sponsorNameDisplay === "Network Error"
-            ? "#ff0000"
-            : "#008202",
-        fontWeight: "600",
-      }}
-    />
-  </div>
-</div>
+                      {/* Sponsor Name (Readonly) */}
+                      <div className="col-lg-12">
+                        <div className="form-box">
+                          <input
+                            type="text"
+                            value={sponsorNameDisplay}
+                            readOnly
+                            placeholder="Sponsor Name"
+                            className="readonly-input"
+                            style={{
+                              color:
+                                sponsorNameDisplay === "Invalid Sponsor" ||
+                                sponsorNameDisplay === "Network Error"
+                                  ? "#ff0000"
+                                  : "#008202",
+                              fontWeight: "600",
+                            }}
+                          />
+                        </div>
+                      </div>
 
-                      <div className="col-lg-12 ">
+                      {/* Full Name */}
+                      <div className="col-lg-12">
                         <div className="form-box">
                           <input
                             type="text"
@@ -647,103 +472,25 @@ const fetchSponsorDetails = async (sponsorId) => {
                         </div>
                       </div>
 
-                      {/* EMAIL + OTP */}
+                      {/* ✅ EMAIL INPUT (Simple — No OTP) */}
                       <div className="col-lg-12">
-                        <div className="d-flex gap-2 align-items-center w-100">
-                          <div className="form-box flex-grow-1" style={{ position: 'relative' }}>
-                            <input
-                              ref={emailInputRef}
-                              type={isOtpMode ? "text" : "email"}
-                              name="email"
-                              placeholder={isOtpMode ? "Enter OTP" : "Email Address*"}
-                              value={isOtpMode ? otpValue : formData.email}
-                              onChange={handleChange}
-                              onKeyPress={handleKeyPress}
-                              required
-                              style={{
-                                flex: 1,
-                                letterSpacing: isOtpMode ? '8px' : 'normal',
-                                fontWeight: isOtpMode ? '600' : 'normal',
-                                fontSize: isOtpMode ? '18px' : '16px',
-                                backgroundColor: isOtpMode ? '#f8f9fa' : 'transparent',
-                                borderColor: isOtpMode
-                                  ? (otpStatus === 'success' ? '#28a745' : otpStatus === 'error' ? '#dc3545' : otpValue.length === 6 ? '#ffc107' : undefined)
-                                  : undefined,
-                                paddingRight: isOtpMode && otpValue.length >= 6 ? '95px' : '50px',
-                                transition: 'border-color 0.3s ease'
-                              }}
-                            />
-
-                            {isOtpMode && otpValue.length >= 6 && (
-                              <div style={{
-                                position: 'absolute',
-                                right: '12px',
-                                top: '50%',
-                                transform: 'translateY(-50%)',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '5px',
-                                pointerEvents: 'none',
-                                zIndex: 2
-                              }}>
-                                {otpStatus === 'success' ? (
-                                  <span style={{ color: '#28a745', fontSize: '20px', fontWeight: 'bold', animation: 'fadeIn 0.3s ease', marginTop: "-10px" }}>✓</span>
-                                ) : otpStatus === 'error' ? (
-                                  <span style={{ color: '#dc3545', fontSize: '20px', fontWeight: 'bold', animation: 'fadeIn 0.3s ease', marginTop: "-10px" }}>✕</span>
-                                ) : (
-                                  <span style={{ color: '#ffc107', fontSize: '18px', fontWeight: 'bold', animation: 'pulse 1s infinite', marginTop: "-10px" }}>⏳</span>
-                                )}
-                              </div>
-                            )}
-                          </div>
-
-                          {!isOtpMode && !otpVerified && (
-                            <button
-                              type="button"
-                              className="btn btn-primary text-nowrap"
-                              onClick={handleSendOTP}
-                              disabled={otpLoading || !formData.email || !formData.email.includes('@')}
-                              style={{
-                                padding: "10px  16px",
-                                minWidth: "100px",
-                                height: "44px",
-                                marginTop: "-10px",
-                                opacity: (otpLoading || !formData.email || !formData.email.includes('@')) ? 0.6 : 1,
-                                cursor: (otpLoading || !formData.email || !formData.email.includes('@')) ? 'not-allowed' : 'pointer'
-                              }}
-                            >
-                              {otpLoading ? "Sending..." : "Send OTP"}
-                            </button>
-                          )}
-
-                          {isOtpMode && !otpVerified && (
-                            <button
-                              type="button"
-                              className="btn btn-primary text-nowrap"
-                              onClick={handleResendOTP}
-                              disabled={otpLoading || resendTimer > 0}
-                              style={{
-                                padding: "12px 16px",
-                                height: "44px",
-                                fontSize: '14px',
-                                minWidth: '80px',
-                                marginTop: "-10px",
-                                opacity: (otpLoading || resendTimer > 0) ? 0.6 : 1,
-                                cursor: (otpLoading || resendTimer > 0) ? 'not-allowed' : 'pointer'
-                              }}
-                            >
-                              {resendTimer > 0 ? formatTime(resendTimer) : "Resend"}
-                            </button>
-                          )}
+                        <div className="form-box">
+                          <input
+                            type="email"
+                            name="email"
+                            placeholder="Email Address*"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                          />
                         </div>
                       </div>
 
-                      {/* ✅ SEARCHABLE COUNTRY INPUT (Select2 Style) */}
+                      {/* Country */}
                       <div className="col-lg-12">
                         <div className="form-box">
                           <div className="country-wrapper" ref={dropdownRef} style={{ position: "relative" }}>
 
-                            {/* ✅ Search Input — Always visible */}
                             <input
                               ref={searchInputRef}
                               type="text"
@@ -780,7 +527,6 @@ const fetchSponsorDetails = async (sponsorId) => {
                               }}
                             />
 
-                            {/* ✅ Arrow Icon */}
                             <IoIosArrowDropdown
                               onClick={() => {
                                 setOpen(!open);
@@ -802,7 +548,6 @@ const fetchSponsorDetails = async (sponsorId) => {
                               }}
                             />
 
-                            {/* ✅ Dropdown */}
                             {open && (
                               <div
                                 className="country-dropdown"
@@ -827,7 +572,7 @@ const fetchSponsorDetails = async (sponsorId) => {
                                   </div>
                                 ) : filteredCountries.length === 0 ? (
                                   <div style={{ padding: "16px 20px", textAlign: "center", color: "#999", fontSize: "14px" }}>
-                                    No country found 
+                                    No country found
                                   </div>
                                 ) : (
                                   filteredCountries.map((country) => (
@@ -945,14 +690,15 @@ const fetchSponsorDetails = async (sponsorId) => {
                         </p>
                       </div>
 
+                      {/* Submit Button */}
                       <div className="col-lg-12 mt-4">
                         <button
                           type="submit"
                           className="laboix-btn"
-                          disabled={loading || !otpVerified}
+                          disabled={loading}
                           style={{
-                            opacity: (loading || !otpVerified) ? 0.6 : 1,
-                            cursor: (loading || !otpVerified) ? 'not-allowed' : 'pointer'
+                            opacity: loading ? 0.6 : 1,
+                            cursor: loading ? 'not-allowed' : 'pointer'
                           }}
                         >
                           {loading ? "Creating Account..." : "Signup Now"}
@@ -1140,33 +886,6 @@ const fetchSponsorDetails = async (sponsorId) => {
                     </button>
                   </div>
                 </div>
-
-                {/* Sponsor Name */}
-                {/* <div className="detail-row02" style={{
-                  display: 'flex', alignItems: 'center', padding: '12px 0',
-                  borderBottom: '1px solid #f0f0f0', gap: '10px',
-                  flexWrap: 'nowrap', minHeight: '44px'
-                }}>
-                  <div className="detail-label02" style={{
-                    fontWeight: '600', color: '#555', whiteSpace: 'nowrap',
-                    flexShrink: 0, fontSize: '13px', width: '100px',
-                    display: 'flex', alignItems: 'center', gap: '6px'
-                  }}>
-                    <FaUser style={{ color: '#667ea5', fontSize: '13px' }} />
-                    <span>Sponsor Name</span>
-                    <span style={{ color: '#999', fontSize: '12px' }}>:</span>
-                  </div>
-                  <div className="detail-value02" style={{
-                    fontWeight: '600', color: '#1a1a1a', whiteSpace: 'nowrap',
-                    overflow: 'hidden', textOverflow: 'ellipsis', flex: 1,
-                    minWidth: 0, fontSize: '14px', textAlign: 'right',
-                    display: 'flex', alignItems: 'center', justifyContent: 'flex-end'
-                  }}>
-                    <span style={{ display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '150px' }}>
-                      {registeredUser.sponsorName}
-                    </span>
-                  </div>
-                </div> */}
 
                 {/* Password */}
                 <div className="detail-row02" style={{

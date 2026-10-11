@@ -362,7 +362,7 @@ export default function RegisterForm({
       email: formData.email.trim().toLowerCase(),
       password: formData.password,
       address: formData.address || "N/A",
-      referrer: formData.referrer.trim() || formData.sponsorName || "apexmindai",
+      referrer: formData.referrer.trim() || formData.sponsorName,
       referrer_Id: formData.referrer_Id.toString(),
       affiliate_Level: parseInt(formData.affiliate_Level) || 1,
       countryId: formData.countryId,

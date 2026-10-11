@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import '../../assets/css/bootstrap.min.css'
 import '../../assets/css/style.min.css'
 
-import logo from "../../assets/images/logo/logo-apex.png";
-import favLogo from "../../assets/images/logo/logo-apex.png";
+import samfoexlogo from "../../assets/images/logo/samforex_light_logo.png";
+import favLogo from "../../assets/images/logo/samforex_light_logo.png";
 
 import sun from "../../assets/images01/sun.png";
 import star from "../../assets/images01/star.png";
@@ -11,6 +11,9 @@ import whyTrade from "../../assets/images01/why_trade.png";
 import tradeVector from "../../assets/images01/trade_vector.png";
 
 import buttonImg from "../../assets/images01/button.png";
+
+
+
 
 import coinImg from "../../assets/images01/coin.png";
 import star2Img from "../../assets/images01/star2.png";
@@ -26,7 +29,7 @@ import blogNews3Img from "../../assets/images01/blog_news3.png";
 
 import vectorImg from "../../assets/images01/vector.png";
 import vector4Img from "../../assets/images01/vector4.png";
-import starFocusImg from "../../assets/images01/star_focus.png";
+// import starFocusImg from "../../assets/images01/star_focus.png";
 
 // import heroimg from '../../assets/images01/icon/hero.png'
 // import heroBgVectorImg from "../../assets/images01/hero_bg_vector.png";
@@ -195,8 +198,8 @@ const sectionStyle = {
                 style={{ display: "flex", alignItems: "center", textDecoration: "none" }}
               >
                 <img
-                  src={isMobile ? favLogo : logo}
-                  alt="logo"
+                  src={isMobile ? favLogo : samfoexlogo}
+                  alt="samfoexlogo"
                   style={{ maxWidth: isMobile ? "100px" : "180px" }}
                 />
               </a>
@@ -643,7 +646,7 @@ const sectionStyle = {
                   </div>
                   <div className="blog_news__content py-6 py-lg-7 py-xxl-8 px-4 px-lg-5 px-xxl-6">
                     <a href="blog-details.html"><h5 className="mb-4 mb-lg-5 text-white">Trading Psychology: Mastering Your Mind for Profit</h5></a>
-                    <div className="fs-seven fw_500 d-flex row-gap-0 flex-wrap gap-3 mb-4 mb-lg-5">August 17,2023 <span>|</span> Written by jason Turner</div>
+                    <div className="fs-seven fw_500 d-flex row-gap-0 flex-wrap gap-3 mb-4 mb-lg-5">August 17,2023</div>
                     <p>Trading in financial markets involves a wide employ to make informed decisions.</p>
                     <a href="#" className="link fs-five fw-semibold d-flex gap-2 gap-lg-3 align-items-center mt-6 mt-lg-8" style={{color: 'rgb(245, 192, 109)'}}> Continue Reading <i className="ti ti-arrow-right"></i></a>
                   </div>
@@ -659,8 +662,8 @@ const sectionStyle = {
                   </div>
                   <div className="blog_news__content py-6 py-lg-7 py-xxl-8 px-4 px-lg-5 px-xxl-6">
                     <a href="#"><h5 className="mb-4 mb-lg-5 text-white">Trading Pitfalls Common Mistakes and How to Avoid Them...</h5></a>
-                    <div className="fs-seven fw_500 d-flex flex-wrap row-gap-0 gap-3 mb-4 mb-lg-5">August 17,2023 <span>|</span> Written by jason Turner</div>
-                    <p>Trading in financial markets involves a wide employ to make informed decisions.</p>
+                    <div className="fs-seven fw_500 d-flex flex-wrap row-gap-0 gap-3 mb-4 mb-lg-5">August 17,2024</div>
+                    <p>Trading success requires patience, discipline, and proper risk management.</p>
                     <a href="#" className="link fs-five fw-semibold d-flex gap-2 gap-lg-3 align-items-center mt-6 mt-lg-8" style={{color: 'rgb(245, 192, 109)'}}> Continue Reading <i className="ti ti-arrow-right"></i></a>
                   </div>
                 </div>
@@ -676,7 +679,7 @@ const sectionStyle = {
                   <div className="blog_news__content py-6 py-lg-7 py-xxl-8 px-4 px-lg-5 px-xxl-6">
                     <a href="#"><h5 className="mb-4 mb-lg-5 text-white">Trading Platforms: Tools for Success in Financial Markets</h5></a>
                     <div className="fs-seven fw_500 d-flex flex-wrap row-gap-0 gap-3 mb-4 mb-lg-5">August 17,2023 <span>|</span> Written by jason Turner</div>
-                    <p>Trading in financial markets involves a wide employ to make informed decisions.</p>
+                    <p>Trading platforms provide essential tools to analyze financial markets.</p>
                     <a href="#" className="link fs-five fw-semibold d-flex gap-2 gap-lg-3 align-items-center mt-6 mt-lg-8" style={{color: 'rgb(245, 192, 109)'}}> Continue Reading <i className="ti ti-arrow-right"></i></a>
                   </div>
                 </div>
@@ -821,3 +824,5 @@ const sectionStyle = {
 };
 
 export default LandingPage;
+
+

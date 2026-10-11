@@ -15,14 +15,16 @@ import { RiRobot2Line } from "react-icons/ri";
 import { RiHandCoinFill } from "react-icons/ri";
 import { FaWallet } from "react-icons/fa";
 import { useUser } from '../../context/UserContext';
-import dashboardlogo from '../../assets/images/logo/dashboardlogo.png'
-import smalldashboardlogo from '../../assets/images/logo/dashboardlogo.png'
+import dashboardlogo from '../../assets/images/logo/samforex_dark_logo.png'
+import smalldashboardlogo from '../../assets/images/logo/favicon.png'
 
 const Sidebar = ({ sidebarCollapsed, mobileSidebarOpen, closeMobileSidebar }) => {
   const [openMenus, setOpenMenus] = useState({});
   const location = useLocation();
   const navigate = useNavigate();
   const { userData, logoutUser } = useUser();
+  
+
   
   const toggleMenu = (menu) => {
     if (!sidebarCollapsed || window.innerWidth <= 992) {
@@ -61,16 +63,16 @@ const Sidebar = ({ sidebarCollapsed, mobileSidebarOpen, closeMobileSidebar }) =>
     { path: '/dashboard/InvestmentHistory', icon: <IconHistory stroke={2} />, label: 'Investment History' },
     { path: '/dashboard/BotTreading', icon: <RiRobot2Line style={{ fontSize: "23px" }} />, label: 'Bot Status' },
     { path: '/dashboard/BotTradingHistory', icon: <IconHistory stroke={2} />, label: 'Bot Status History' },
-    { path: '/dashboard/InvestToken', icon: <RiHandCoinFill stroke={2} />, label: 'Token Mining' },
-    { path: '/dashboard/InvestTokenHistory', icon: <IconHistory stroke={2} />, label: 'Token Mining History' },
-    { path: '/dashboard/TokenMiningIncomeHistory', icon: <IconHistory stroke={2} />, label: 'Token Mining Income' },
+    // { path: '/dashboard/InvestToken', icon: <RiHandCoinFill stroke={2} />, label: 'Token Mining' },
+    // { path: '/dashboard/InvestTokenHistory', icon: <IconHistory stroke={2} />, label: 'Token Mining History' },
+    // { path: '/dashboard/TokenMiningIncomeHistory', icon: <IconHistory stroke={2} />, label: 'Token Mining Income' },
     { path: '/dashboard/Fundtransfer', icon: <IconReplaceUser stroke={2} />, label: 'Fund Transfer' },
     { path: '/dashboard/IncomePayOutHistory', icon: <IconHistory stroke={2} />, label: 'Income Payout History' },
-    { path: '/dashboard/SelfPayoutHistory', icon: <IconHistory stroke={2} />, label: 'Self Payout History' },
-    { path: '/dashboard/SelfTradingHistory', icon: <IconHistory stroke={2} />, label: 'Self Trading History' },
+    // { path: '/dashboard/SelfPayoutHistory', icon: <IconHistory stroke={2} />, label: 'Self Payout History' },
+    // { path: '/dashboard/SelfTradingHistory', icon: <IconHistory stroke={2} />, label: 'Self Trading History' },
     { path: '/dashboard/IncomeReport', icon: <IconHistory stroke={2} />, label: 'Income History' },
-    { path: '/dashboard/Reward', icon: <IconAward stroke={2} />, label: 'Reward' },
-    { path: '/dashboard/SocalMediaTask', icon: <FaExternalLinkAlt />, label: 'Social Media Task' },
+    // { path: '/dashboard/Reward', icon: <IconAward stroke={2} />, label: 'Reward' },
+    // { path: '/dashboard/SocalMediaTask', icon: <FaExternalLinkAlt />, label: 'Social Media Task' },
     { path: '/dashboard/downline-team', icon: <IconUsersGroup stroke={2} />, label: 'Downline Team' },
     { path: '/dashboard/tree-view', icon: <IconBinaryTree2 stroke={2} />, label: 'Tree View' },
   ];
@@ -82,7 +84,7 @@ const Sidebar = ({ sidebarCollapsed, mobileSidebarOpen, closeMobileSidebar }) =>
     <aside className={`left-sidebar with-vertical ${sidebarCollapsed ? 'collapsed' : ''} ${mobileSidebarOpen ? 'mobile-open' : ''}`}>
       <div>
         {/* Brand Logo - Big Logo when expanded, Small Logo when collapsed */}
-        <div className="brand-logo d-flex align-items-center justify-content-between">
+        <div className="brand-logo d-flex align-items-center justify-content-between " >
           <Link to="/" className="text-nowrap logo-img" onClick={handleLinkClick}>
             {!isCollapsed ? (
               <img

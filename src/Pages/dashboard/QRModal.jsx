@@ -29,12 +29,12 @@ const QRModal = ({ isOpen, onClose }) => {
     const generateReferralLink = () => {
         try {
             const loginid = userData?.loginid;
-            const baseUrl = 'https://apxmindai.com';
+            const baseUrl = 'http://samforex.com';
             const link = `${baseUrl}/signup?ref=${loginid}`;
             setReferralLink(link);
         } catch (error) {
             console.error("Error generating referral link:", error);
-            setReferralLink('https://apxmindai.com/signup');
+            setReferralLink('http://samforex.com/signup');
         }
     };
 

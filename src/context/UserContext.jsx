@@ -17,10 +17,16 @@ export const UserProvider = ({ children }) => {
   const [payoutData, setPayoutData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // ✅ isAuthenticated - sessionStorage se initialize
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     const regno = sessionStorage.getItem('Regno');
-    return !!(regno);
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+    return !!(regno && isLoggedIn === 'true');
   });
+
+  // ✅ NAYA: Auth loading flag - jab tak session restore na ho, redirect nahi hoga
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   const isFetching = useRef(false);
   const initialLoadDone = useRef(false);
@@ -41,8 +47,16 @@ export const UserProvider = ({ children }) => {
 
     try {
       let Regno = sessionStorage.getItem('regno') || sessionStorage.getItem('Regno');
+
+      // ✅ Agar regno nahi hai toh API call mat karo
+      if (!Regno) {
+        console.warn("⚠️ No Regno found, skipping fetch");
+        return null;
+      }
+
       const response = await apiClient.get(`/Dashboard/Dashboard/${Regno}`);
       if (!isMounted.current) return null;
+
       if (response.data?.result === "true" && response.data?.response) {
         const apiData = response.data.response;
 
@@ -125,18 +139,22 @@ export const UserProvider = ({ children }) => {
         };
 
         setUserData(newUserData);
-        setIsAuthenticated(true);
-
+        setIsAuthenticated(true);   // ✅ Success pe true
         return newUserData;
+
       } else {
+        // ❌ API fail hone pe LOGOUT NAHI karenge
         console.error("❌ Dashboard API error:", response.data);
-        setIsAuthenticated(false);
+        // ✅ setIsAuthenticated(false);  <-- YE LINE HATA DI
         return null;
       }
+
     } catch (error) {
+      // ❌ Error pe bhi LOGOUT NAHI karenge
       console.error("❌ Dashboard Fetch Error:", error);
-      setIsAuthenticated(false);
+      // ✅ setIsAuthenticated(false);  <-- YE LINE BHI HATA DI
       return null;
+
     } finally {
       if (isMounted.current) {
         if (force) {
@@ -147,25 +165,31 @@ export const UserProvider = ({ children }) => {
         isFetching.current = false;
       }
     }
-  }, [user?.loginid, userData]);
+  }, [user?.loginid]);   // ✅ userData ko dependency se HATA diya (infinite loop fix)
 
   // ===================== RESTORE SESSION =====================
   useEffect(() => {
     isMounted.current = true;
 
     const regno = sessionStorage.getItem('Regno');
-    if (regno) {
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+
+    if (regno && isLoggedIn === 'true') {
       setIsAuthenticated(true);
     } else {
       setIsAuthenticated(false);
     }
 
-    if (initialLoadDone.current) return;
+    if (initialLoadDone.current) {
+      setIsAuthLoading(false);   // ✅ Already loaded
+      return;
+    }
 
     if (userData && Object.keys(userData).length > 0) {
       initialLoadDone.current = true;
       setLoading(false);
       setIsAuthenticated(true);
+      setIsAuthLoading(false);   // ✅ Auth check done
       return;
     }
 
@@ -194,6 +218,11 @@ export const UserProvider = ({ children }) => {
           console.error("Error parsing stored user:", e);
         }
       }
+
+      // ✅ Auth check complete - ab redirect safe hai
+      if (isMounted.current) {
+        setIsAuthLoading(false);
+      }
     };
 
     const timer = setTimeout(() => {
@@ -204,6 +233,7 @@ export const UserProvider = ({ children }) => {
       clearTimeout(timer);
       isMounted.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ===================== LOGIN =====================
@@ -229,6 +259,7 @@ export const UserProvider = ({ children }) => {
 
     setUser(userData);
     setIsAuthenticated(true);
+    setIsAuthLoading(false);   // ✅ Auth done
 
     setTimeout(() => {
       fetchData(true);
@@ -279,6 +310,7 @@ export const UserProvider = ({ children }) => {
     loading,
     isRefreshing,
     isAuthenticated,
+    isAuthLoading,   // ✅ NAYA - App.jsx mein use karo
     refreshData,
     refreshUserData,
     loginUser,
@@ -296,7 +328,7 @@ export const UserProvider = ({ children }) => {
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error(' useUser must be used within a UserProvider');
+    throw new Error('useUser must be used within a UserProvider');
   }
   return context;
 };

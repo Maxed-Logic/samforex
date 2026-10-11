@@ -6,10 +6,11 @@ import { ToastContainer } from 'react-toastify';
 
 const AppRoutes = () => {
   const { isAuthenticated } = useUser();
+
+
   return (
     <>
-
-     <ToastContainer
+      <ToastContainer
         position="top-right"
         autoClose={3000}
         hideProgressBar={false}
@@ -21,18 +22,18 @@ const AppRoutes = () => {
         pauseOnHover
         theme="light"
       />
-    
-    <Routes>
-      <Route 
-        path="/*" 
-        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LandingLayout />} 
-      />
-      <Route 
-        path="/dashboard/*" 
-        element={isAuthenticated ? <DashboardLayout /> : <Navigate to="/" replace />} 
-      />
-    </Routes>
-     </>
+
+      <Routes>
+        <Route
+          path="/*"
+          element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LandingLayout />}
+        />
+        <Route
+          path="/dashboard/*"
+          element={isAuthenticated ? <DashboardLayout /> : <Navigate to="/" replace />}
+        />
+      </Routes>
+    </>
   );
 };
 

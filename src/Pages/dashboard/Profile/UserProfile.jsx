@@ -18,7 +18,7 @@ const UserProfile = () => {
   const [formData, setFormData] = useState({
     loginId: "",
     address: "",
-    fullName: "apexmindai",
+    fullName: "",
     emailId: "",
     mobileNumber: "",
     firstName: "",
@@ -311,7 +311,7 @@ const UserProfile = () => {
                     />
                   </div>
 
-                  <div className="mb-3">
+                  {/* <div className="mb-3">
                     <label>Token Payout Address</label>
                     <input
                       type="text"
@@ -322,7 +322,7 @@ const UserProfile = () => {
                       className="form-control"
                       style={{ color: formData.address ? "green" : "#999" }}
                     />
-                  </div>
+                  </div> */}
 
                   {/* ✅ OTP SECTION - IMPROVED */}
                   <div className="mb-3 p-3" style={{ 

@@ -7943,6 +7943,7 @@
   padding: 0 15px;
   height: calc(100vh - 170px);
   border-radius: 7px;
+  margin-top: 12px;
 }
 .left-sidebar .scroll-sidebar .simplebar-track.simplebar-horizontal {
   visibility: hidden !important;
@@ -11138,3 +11139,18 @@ ul {
 
 
 
+.incometext{
+  color: #000;
+   font-size: 18px;
+}
+
+.incometext01{
+  color: green;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+input{
+  background-color: #fffefe !important;
+  color: #000;
+}
